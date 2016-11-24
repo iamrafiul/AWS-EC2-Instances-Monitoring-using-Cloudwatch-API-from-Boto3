@@ -1,0 +1,594 @@
+<!--
+@Author: mdrhri-6
+@Date:   2016-11-19T21:48:38+01:00
+@Last modified by:   mdrhri-6
+@Last modified time: 2016-11-24T18:55:44+01:00
+-->
+
+
+<HTML>
+  <style>
+    .navbar {
+        height: 55px;
+    }
+    .nav {
+        height: 60px;
+    }
+    .my-chart {
+      width: 320px;
+      height: 380px;
+      display: block;
+      float: left;
+      margin: 10px 20px;
+    }
+    canvas {
+            width: 100% !important;
+            max-width: 500px;
+            height: auto !important;
+    }
+  </style>
+  <!-- Latest compiled and minified CSS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="static/Chart.bundle.js"></script>
+  <HEAD>
+    <TITLE>A Table</TITLE>
+  </HEAD>
+  <BODY BGCOLOR="FFFFFF">
+    <nav class="navbar navbar-default">
+      <!--<div class="container-fluid" align="right">-->
+
+      <!--</div>-->
+      <div class="container-fluid" align="right">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <!--<ul class="nav navbar-nav">-->
+              <!--<li style="text-align: left; font-size: 40px;"><a href="#offer-form">API</a></li>-->
+          <!--</ul>-->
+          <p style="text-align: center; font-size: 40px;">
+            <a href="#">CloudWatch Metrics Viewer</a>
+          </p>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div>
+      <div class="container">
+        <div class="my-chart">
+            <canvas id="cpuUtilization" width="320" height="380"></canvas>
+        </div>
+        <div class="my-chart">
+          <canvas id="statusCheckFailed" width="320" height="380"></canvas>
+        </div>
+        <div class="my-chart">
+            <canvas id="networkIn" width="320" height="380"></canvas>
+        </div>
+        <div class="my-chart">
+            <canvas id="networkOut" width="320" height="380"></canvas>
+        </div>
+        <div class="my-chart">
+            <canvas id="diskReadBytes" width="320" height="380"></canvas>
+        </div>
+        <div class="my-chart">
+            <canvas id="diskWriteBytes" width="320" height="380"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </BODY>
+</HTML>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Create chart context using id of canvas elements
+        var cpuUtilization = document.getElementById("cpuUtilization");
+        var statusCheckFailed = document.getElementById("statusCheckFailed");
+        var networkIn = document.getElementById("networkIn");
+        var networkOut = document.getElementById("networkOut");
+        var diskReadBytes = document.getElementById("diskReadBytes");
+        var diskWriteBytes = document.getElementById("diskWriteBytes");
+
+
+        // Create chart for each chart context
+//        var myLineChart = new Chart(cpuUtilization, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "CPU Utilization (%)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Use Percentage(%)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+//        var myLineChart = new Chart(statusCheckFailed, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "Status Check Failed (Count)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Check Failed(Count)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+//        var myLineChart = new Chart(networkIn, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "Network In (Bytes)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Network In(Bytes)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+//        var myLineChart = new Chart(networkOut, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "Network Out (Bytes)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Network Out(Bytes)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+//        var myLineChart = new Chart(diskReadBytes, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "Disk Read (Bytes)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Disk Read(Bytes)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+//        var myLineChart = new Chart(diskWriteBytes, {
+//          type: 'line',
+//          data: {
+//              labels: ["1", "2", "3", "4", "5", "6"],
+//              datasets: [{
+//                data: [12, 19, 3, 5, 2, 3],
+//              }]
+//          },
+//          options: {
+//            title: {
+//              display: true,
+//              text: "Disk Write (Bytes)",
+//              fontSize: 18
+//            },
+//            scales: {
+//              xAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Time(H:M:S)'
+//                }
+//              }],
+//              yAxes: [{
+//                scaleLabel: {
+//                  display: true,
+//                  labelString: 'Disk Write(Bytes)'
+//                },
+//                ticks: {
+//                  beginAtZero: true
+//                }
+//              }]
+//            }
+//          }
+//        });
+
+
+        // AJAX call for fetching new data after each 15 seconds.
+        setInterval("getcpuUtilizationData()", 10000);
+        setInterval("getstatusCheckFailedData()", 10000);
+        setInterval("getnetworkInData()", 10000);
+        setInterval("getnetworkOutData()", 10000);
+        setInterval("getdiskReadBytesData()", 10000);
+        setInterval("getdiskWriteBytesData()", 10000);
+    });
+
+    // Functions for ajax calls
+    function getcpuUtilizationData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_cpu_utilization',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("cpuUtilization");
+
+          var config = {
+            type: 'line',
+            data: {
+              labels: resp[0],
+              datasets: [{
+                data: resp[1],
+              }]
+            },
+            options: {
+              title: {
+                display: true,
+                text: "CPU Utilization (%)",
+                fontSize: 18
+              },
+              scales: {
+                xAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Time(H:M:S)'
+                  }
+                }],
+                yAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Use Percentage(%)'
+                  },
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
+            }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+
+    function getstatusCheckFailedData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_status_check_failed',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("statusCheckFailed");
+
+          var config = {
+              type: 'line',
+              data: {
+                  labels: resp[0],
+                  datasets: [{
+                    data: resp[1],
+                  }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Status Check Failed (Count)",
+                  fontSize: 18
+                },
+                scales: {
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Time(H:M:S)'
+                    }
+                  }],
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Check Failed(Count)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+
+    function getnetworkInData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_network_in',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("networkIn");
+
+          var config = {
+              type: 'line',
+              data: {
+                  labels: resp[0],
+                  datasets: [{
+                    data: resp[1],
+                  }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Network In (Bytes)",
+                  fontSize: 18
+                },
+                scales: {
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Time(H:M:S)'
+                    }
+                  }],
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Network In(Bytes)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+
+    function getnetworkOutData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_network_out',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("networkOut");
+
+          var config = {
+              type: 'line',
+              data: {
+                  labels: resp[0],
+                  datasets: [{
+                    data: resp[1],
+                  }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Network Out (Bytes)",
+                  fontSize: 18
+                },
+                scales: {
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Time(H:M:S)'
+                    }
+                  }],
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Network Out(Bytes)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+
+    function getdiskReadBytesData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_disk_read_bytes',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("diskReadBytes");
+
+          var config = {
+              type: 'line',
+              data: {
+                  labels: resp[0],
+                  datasets: [{
+                    data: resp[1],
+                  }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Disk Read (Bytes)",
+                  fontSize: 18
+                },
+                scales: {
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Time(H:M:S)'
+                    }
+                  }],
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Disk Read(Bytes)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+
+    function getdiskWriteBytesData() {
+      $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: '/api/get_disk_write_bytes',
+        success: function(resp){
+          console.log(resp);
+          var new_ctx = document.getElementById("diskWriteBytes");
+
+          var config = {
+              type: 'line',
+              data: {
+                  labels: resp[0],
+                  datasets: [{
+                    data: resp[1],
+                  }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Disk Write (Bytes)",
+                  fontSize: 18
+                },
+                scales: {
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Time(H:M:S)'
+                    }
+                  }],
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Disk Write(Bytes)'
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+          };
+          new Chart(new_ctx, config);
+        }
+      });
+    }
+</script>
